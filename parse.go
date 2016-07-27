@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"log"
 	"os"
 	"time"
@@ -45,6 +46,16 @@ func (z *htmlParser) getItem(entite string) (item *Item) {
 	z.Next() // text (newline)
 	z.Next() // td
 	z.Next() // input
+	for {
+		k, v, more := z.TagAttr()
+		if string(k) == "name" {
+			item.Name = string(v)
+			break
+		}
+		if !more {
+			break
+		}
+	}
 	z.Next() // /td
 
 	z.Next() // td
@@ -90,5 +101,32 @@ func (z *htmlParser) getItem(entite string) (item *Item) {
 	z.Next() // text (newline)
 	z.Next() // /tr
 
+	return
+}
+
+func (z *htmlParser) checkError() (err error) {
+	for {
+		tt := z.Next()
+		switch tt {
+		case html.ErrorToken:
+			// end of document, done
+			return
+		case html.StartTagToken:
+			n, a := z.TagName()
+			if string(n) == "span" && a {
+				for {
+					k, v, more := z.TagAttr()
+					if string(k) == "id" && string(v) == "ctl00_ContentPlaceHolder1_ctl00_ctl08_COMPTE_PRET_1_1_MSG_ERREUR" {
+						z.Next()
+						err = errors.New(z.Token().Data)
+						return
+					}
+					if !more {
+						break
+					}
+				}
+			}
+		}
+	}
 	return
 }

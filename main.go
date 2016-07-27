@@ -14,7 +14,10 @@ func main() {
 		for _, i := range items {
 			alert := i.processState(cfg.RenewBefore.Duration)
 			if i.State == stateNeedsRenewing && cfg.AutoRenew {
-				_ = i.renew(a.Client)
+				err := i.renew(a.Client)
+				if err != nil {
+					fmt.Printf("Failed to renew %s: %s", i.Title, err)
+				}
 			}
 			a.Alert = alert || a.Alert
 			a.Items = append(a.Items, i)
