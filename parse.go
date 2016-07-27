@@ -8,7 +8,11 @@ import (
 	"golang.org/x/net/html"
 )
 
-func getItems(z *html.Tokenizer) (entries []*Item) {
+type htmlParser struct {
+	*html.Tokenizer
+}
+
+func (z *htmlParser) getItems() (entries []*Item) {
 	for {
 		tt := z.Next()
 		switch tt {
@@ -21,7 +25,7 @@ func getItems(z *html.Tokenizer) (entries []*Item) {
 				for {
 					k, v, more := z.TagAttr()
 					if string(k) == "entite" {
-						entries = append(entries, getItem(z, string(v)))
+						entries = append(entries, z.getItem(string(v)))
 						break
 					}
 					if !more {
@@ -33,7 +37,7 @@ func getItems(z *html.Tokenizer) (entries []*Item) {
 	}
 }
 
-func getItem(z *html.Tokenizer, entite string) (item *Item) {
+func (z *htmlParser) getItem(entite string) (item *Item) {
 	item = &Item{
 		Entite: entite,
 	}

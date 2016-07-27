@@ -94,8 +94,10 @@ func (a *account) getItems() (items []*Item) {
 	data := resp.Body
 	defer data.Close()
 
-	z := html.NewTokenizer(data)
+	z := &htmlParser{
+		Tokenizer: html.NewTokenizer(data),
+	}
 
-	items = getItems(z)
+	items = z.getItems()
 	return
 }
