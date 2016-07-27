@@ -5,6 +5,8 @@ Check book status for http://www.bm-chambery.fr/
 
 Supports checking multiple accounts.
 
+![screenshot](./screenshot.png)
+
 
 # Installing
 
