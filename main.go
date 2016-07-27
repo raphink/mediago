@@ -71,7 +71,8 @@ func main() {
 			i.processState(cfg.RenewBefore.Duration)
 			alerts = append(alerts, fmt.Sprintf("[%s]\t%s\t%s\n", i.State, i.Date.Format("02/01/2006"), i.Title))
 		}
-		fmt.Printf(strings.Join(alerts, "\n"))
+		fmt.Printf(strings.Join(alerts, ""))
+		fmt.Println()
 	}
 }
 
