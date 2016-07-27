@@ -66,14 +66,18 @@ func main() {
 	cfg := loadConfig()
 	for _, a := range cfg.Account {
 		items := getAccountItems(a.Name, a.Login, a.Password)
-		titleColor.Println(a.Name)
 		for _, i := range items {
 			i.processState(cfg.RenewBefore.Duration)
 			a.Alerts = append(a.Alerts, fmt.Sprintf("[%s]\t%s\t%s\n", i.State, i.Date.Format("02/01/2006"), i.Title))
 		}
-		fmt.Printf(strings.Join(a.Alerts, ""))
-		fmt.Println()
+		a.report()
 	}
+}
+
+func (a *account) report() {
+	titleColor.Println(a.Name)
+	fmt.Printf(strings.Join(a.Alerts, ""))
+	fmt.Println()
 }
 
 func loadConfig() (c *config) {
