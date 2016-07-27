@@ -42,6 +42,6 @@ func (i *Item) processState(renewBefore time.Duration) (alert bool) {
 }
 
 func (i *Item) renew() (err error) {
-	fmt.Printf("Autorenewing is not implemented yet")
+	fmt.Println("Autorenewing is not implemented yet")
 	return
 }
