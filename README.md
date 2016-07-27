@@ -20,6 +20,7 @@ $ go get github.com/raphink/mediago
 ```toml
 # $HOME/.mediago.conf
 renew_before = "24h"
+report = "smtp"
 
 [[account]]
 name = "Foo"
@@ -30,4 +31,11 @@ password = "SUPERPASS"
 name = "Bar"
 login = "CHAM456789"
 password = "ANOTHERPASS"
+
+[smtp]
+username = "smtp_user"
+password = "email_pass"
+hostname = "smtp.example.com"
+port = 587
+recipients = ["foo@example.com", "bar@example.com"]
 ```

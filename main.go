@@ -61,6 +61,7 @@ type account struct {
 type config struct {
 	Account     []account
 	RenewBefore duration `toml:"renew_before"`
+	AutoRenew   bool     `toml:"auto_renew"`
 	Report      string
 	Smtp        smtpCfg
 }
