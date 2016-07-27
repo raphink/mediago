@@ -91,6 +91,9 @@ func main() {
 		items := getAccountItems(a.Name, a.Login, a.Password)
 		for _, i := range items {
 			alert := i.processState(cfg.RenewBefore.Duration)
+			if i.State == stateNeedsRenewing && cfg.AutoRenew {
+				_ = i.renew()
+			}
 			a.Alert = alert || a.Alert
 			a.Items = append(a.Items, i)
 		}
@@ -293,5 +296,10 @@ func (i *Item) processState(renewBefore time.Duration) (alert bool) {
 	} else {
 		i.State = stateOK
 	}
+	return
+}
+
+func (i *Item) renew() (err error) {
+	fmt.Printf("Autorenewing is not implemented yet")
 	return
 }
