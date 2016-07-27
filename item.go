@@ -3,15 +3,7 @@ package main
 import (
 	"fmt"
 	"time"
-
-	"github.com/fatih/color"
 )
-
-// Colors
-var titleColor = color.New(color.FgBlue).Add(color.Bold).Add(color.Underline)
-var okColor = color.New(color.FgGreen).Add(color.Bold).SprintFunc()
-var warnColor = color.New(color.FgYellow).Add(color.Bold).SprintFunc()
-var errColor = color.New(color.FgRed).Add(color.Bold).SprintFunc()
 
 type Item struct {
 	Entite   string

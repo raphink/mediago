@@ -1,5 +1,7 @@
 package main
 
+import "github.com/fatih/color"
+
 type state struct {
 	Message string
 }
@@ -12,6 +14,12 @@ var Late = "!!LATE!!"
 var stateOK = state{Message: OK}
 var stateNeedsRenewing = state{Message: NeedsRenewing}
 var stateLate = state{Message: Late}
+
+// Colors
+var titleColor = color.New(color.FgBlue).Add(color.Bold).Add(color.Underline)
+var okColor = color.New(color.FgGreen).Add(color.Bold).SprintFunc()
+var warnColor = color.New(color.FgYellow).Add(color.Bold).SprintFunc()
+var errColor = color.New(color.FgRed).Add(color.Bold).SprintFunc()
 
 func (s *state) String() string {
 	return s.Message
