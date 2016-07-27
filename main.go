@@ -14,7 +14,7 @@ func main() {
 		for _, i := range items {
 			alert := i.processState(cfg.RenewBefore.Duration)
 			if i.State == stateNeedsRenewing && cfg.AutoRenew {
-				_ = i.renew()
+				_ = i.renew(a.Client)
 			}
 			a.Alert = alert || a.Alert
 			a.Items = append(a.Items, i)

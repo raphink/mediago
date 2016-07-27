@@ -20,6 +20,7 @@ type account struct {
 	Password string
 	Items    []*Item
 	Alert    bool
+	Client   *http.Client
 }
 
 func (a *account) alerts(colored bool) (alerts string) {
@@ -69,8 +70,8 @@ func (a *account) getItems() (items []*Item) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	client := http.Client{Jar: jar}
-	resp, err := client.PostForm("http://www.bm-chambery.fr/opacwebaloes/index.aspx?idPage=33", url.Values{
+	a.Client = &http.Client{Jar: jar}
+	resp, err := a.Client.PostForm("http://www.bm-chambery.fr/opacwebaloes/index.aspx?idPage=33", url.Values{
 		"ctl00$ScriptManager1":                                          {"ctl00$ContentPlaceHolder1$ctl00$ctl00$ContentPlaceHolder1$ctl00$ctl05$ctl00$RadAjaxPanelConnexionPanel|ctl00$ContentPlaceHolder1$ctl00$ctl05$ctl00$btnImgConnexion"},
 		"ctl00_ScriptManager1_TSM":                                      {";;System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35:fr-FR:c2b5a2f3-2711-4e71-b087-b34e92289501:ea597d4b:b25378d2;Telerik.Web.UI, Version=2013.3.1324.35, Culture=neutral, PublicKeyToken=121fae78165ba3d4:fr-FR:84d93921-96f0-4f42-826e-aa3f3f71544e:16e4e7cd:ed16cbdc:874f8ea2:f7645509:24ee1bba:92fe8ea0:fa31b949:f46195d3:19620875:490a9d4e:bd8f85e4:88144a7a"},
 		"ctl00$ContentPlaceHolder1$ctl00$ctl05$ctl00$TextSaisie":        {a.Login},
@@ -86,7 +87,7 @@ func (a *account) getItems() (items []*Item) {
 		log.Fatal(err)
 	}
 
-	resp, err = client.Get("http://www.bm-chambery.fr/opacwebaloes/index.aspx?idPage=478")
+	resp, err = a.Client.Get("http://www.bm-chambery.fr/opacwebaloes/index.aspx?idPage=478")
 	if err != nil {
 		log.Fatal(err)
 	}

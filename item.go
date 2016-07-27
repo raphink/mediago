@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"time"
 )
 
@@ -33,7 +34,7 @@ func (i *Item) processState(renewBefore time.Duration) (alert bool) {
 	return
 }
 
-func (i *Item) renew() (err error) {
+func (i *Item) renew(c *http.Client) (err error) {
 	fmt.Println("Autorenewing is not implemented yet")
 	return
 }
