@@ -67,11 +67,11 @@ func main() {
 	}
 
 	for _, a := range cfg.Account {
-		i := getAccountItems(a.Name, a.Login, a.Password)
+		items := getAccountItems(a.Name, a.Login, a.Password)
 		titleColor.Println(a.Name)
-		for _, e := range i {
-			e.processState(cfg.RenewBefore.Duration)
-			fmt.Printf("[%s]\t%s\t%s\n", e.State, e.Date.Format("02/01/2006"), e.Title)
+		for _, i := range items {
+			i.processState(cfg.RenewBefore.Duration)
+			fmt.Printf("[%s]\t%s\t%s\n", i.State, i.Date.Format("02/01/2006"), i.Title)
 		}
 	}
 }
