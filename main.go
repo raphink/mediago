@@ -61,10 +61,7 @@ func (d *duration) UnmarshalText(text []byte) (err error) {
 var confFile = fmt.Sprintf("%s/.mediago.conf", os.Getenv("HOME"))
 
 func main() {
-	var cfg config
-	if _, err := toml.DecodeFile(confFile, &cfg); err != nil {
-		log.Fatal(err)
-	}
+	cfg := loadConfig()
 
 	for _, a := range cfg.Account {
 		items := getAccountItems(a.Name, a.Login, a.Password)
@@ -74,6 +71,13 @@ func main() {
 			fmt.Printf("[%s]\t%s\t%s\n", i.State, i.Date.Format("02/01/2006"), i.Title)
 		}
 	}
+}
+
+func loadConfig() (c *config) {
+	if _, err := toml.DecodeFile(confFile, &c); err != nil {
+		log.Fatal(err)
+	}
+	return
 }
 
 func getAccountItems(name, account, password string) (items []*Item) {
