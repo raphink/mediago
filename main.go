@@ -9,12 +9,22 @@ import (
 	"os"
 	"time"
 
-	"github.com/0xAX/notificator"
 	"github.com/BurntSushi/toml"
 	"github.com/fatih/color"
 	"golang.org/x/net/html"
 	"golang.org/x/net/publicsuffix"
 )
+
+// Colors
+var titleColor = color.New(color.FgBlue).Add(color.Bold).Add(color.Underline)
+var okColor = color.New(color.FgGreen).Add(color.Bold).SprintFunc()
+var warnColor = color.New(color.FgYellow).Add(color.Bold).SprintFunc()
+var errColor = color.New(color.FgRed).Add(color.Bold).SprintFunc()
+
+// Item states
+var OK = okColor("OK")
+var NeedsRenewing = warnColor("NEEDS RENEWING")
+var Late = errColor("!!LATE!!")
 
 type Item struct {
 	Entite   string
@@ -25,6 +35,7 @@ type Item struct {
 	Barcode  string
 	RentType string
 	Booked   string
+	State    string
 }
 
 type account struct {
@@ -49,12 +60,6 @@ func (d *duration) UnmarshalText(text []byte) (err error) {
 
 var confFile = fmt.Sprintf("%s/.mediago.conf", os.Getenv("HOME"))
 
-// Colors
-var titleColor = color.New(color.FgBlue).Add(color.Bold).Add(color.Underline)
-var okColor = color.New(color.FgGreen).Add(color.Bold).SprintFunc()
-var warnColor = color.New(color.FgYellow).Add(color.Bold).SprintFunc()
-var errColor = color.New(color.FgRed).Add(color.Bold).SprintFunc()
-
 func main() {
 	var cfg config
 	if _, err := toml.DecodeFile(confFile, &cfg); err != nil {
@@ -63,38 +68,10 @@ func main() {
 
 	for _, a := range cfg.Account {
 		i := getAccountItems(a.Name, a.Login, a.Password)
-
 		titleColor.Println(a.Name)
-
-		now := time.Now()
-		tomorrow := now.Add(cfg.RenewBefore.Duration)
-		var alert bool
-		var output string
 		for _, e := range i {
-			var state string
-			if now.After(e.Date) {
-				state = errColor("!!LATE!!")
-				alert = true
-			} else if tomorrow.After(e.Date) {
-				state = warnColor("NEEDS RENEWING")
-				alert = true
-				// TODO: automatically renew
-			} else {
-				state = okColor("OK")
-			}
-			//fmt.Printf("[%s] %s: %s, %s, %s, %s, %s, %s, %s\n", state, e.Entite, e.Date, e.Location, e.Type, e.Title, e.Barcode, e.RentType, e.Booked)
-			output += fmt.Sprintf("[%s]\t%s\t%s\n", state, e.Date.Format("02/01/2006"), e.Title)
-		}
-		fmt.Println(output)
-
-		if alert {
-			notify := notificator.New(notificator.Options{
-				DefaultIcon: "icon/dialog-warning.png",
-				AppName:     "Mediago",
-			})
-
-			title := fmt.Sprintf("Mediathèque %s", a.Name)
-			notify.Push(title, output, "/usr/share/icons/gnome/32x32/status/gtk-dialog-warning.png", notificator.UR_CRITICAL)
+			setItemState(e, cfg.RenewBefore.Duration)
+			fmt.Printf("[%s]\t%s\t%s\n", e.State, e.Date.Format("02/01/2006"), e.Title)
 		}
 	}
 }
@@ -216,5 +193,19 @@ func getItem(z *html.Tokenizer, entite string) (item *Item) {
 	z.Next() // text (newline)
 	z.Next() // /tr
 
+	return
+}
+
+func setItemState(i *Item, renewBefore time.Duration) {
+	now := time.Now()
+	renewDate := now.Add(renewBefore)
+
+	if now.After(i.Date) {
+		i.State = Late
+	} else if renewDate.After(i.Date) {
+		i.State = NeedsRenewing
+	} else {
+		i.State = OK
+	}
 	return
 }
