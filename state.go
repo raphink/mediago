@@ -4,6 +4,11 @@ type state struct {
 	Message string
 }
 
+// Item states
+var OK = "OK"
+var NeedsRenewing = "NEEDS RENEWING"
+var Late = "!!LATE!!"
+
 var stateOK = state{Message: OK}
 var stateNeedsRenewing = state{Message: NeedsRenewing}
 var stateLate = state{Message: Late}

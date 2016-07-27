@@ -13,11 +13,6 @@ var okColor = color.New(color.FgGreen).Add(color.Bold).SprintFunc()
 var warnColor = color.New(color.FgYellow).Add(color.Bold).SprintFunc()
 var errColor = color.New(color.FgRed).Add(color.Bold).SprintFunc()
 
-// Item states
-var OK = "OK"
-var NeedsRenewing = "NEEDS RENEWING"
-var Late = "!!LATE!!"
-
 type Item struct {
 	Entite   string
 	Date     time.Time
