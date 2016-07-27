@@ -11,6 +11,7 @@ import (
 
 	"github.com/0xAX/notificator"
 	"github.com/BurntSushi/toml"
+	"github.com/fatih/color"
 	"golang.org/x/net/html"
 	"golang.org/x/net/publicsuffix"
 )
@@ -48,6 +49,12 @@ func (d *duration) UnmarshalText(text []byte) (err error) {
 
 var confFile = fmt.Sprintf("%s/.mediago.conf", os.Getenv("HOME"))
 
+// Colors
+var titleColor = color.New(color.FgBlue).Add(color.Bold).Add(color.Underline)
+var okColor = color.New(color.FgGreen).Add(color.Bold).SprintFunc()
+var warnColor = color.New(color.FgYellow).Add(color.Bold).SprintFunc()
+var errColor = color.New(color.FgRed).Add(color.Bold).SprintFunc()
+
 func main() {
 	var cfg config
 	if _, err := toml.DecodeFile(confFile, &cfg); err != nil {
@@ -57,7 +64,8 @@ func main() {
 	for _, a := range cfg.Account {
 		i := getAccountItems(a.Name, a.Login, a.Password)
 
-		fmt.Printf("# %s\n", a.Name)
+		titleColor.Println(a.Name)
+
 		now := time.Now()
 		tomorrow := now.Add(cfg.RenewBefore.Duration)
 		var alert bool
@@ -65,14 +73,14 @@ func main() {
 		for _, e := range i {
 			var state string
 			if now.After(e.Date) {
-				state = "!!LATE!!"
+				state = errColor("!!LATE!!")
 				alert = true
 			} else if tomorrow.After(e.Date) {
-				state = "NEEDS RENEWING"
+				state = warnColor("NEEDS RENEWING")
 				alert = true
 				// TODO: automatically renew
 			} else {
-				state = "OK"
+				state = okColor("OK")
 			}
 			//fmt.Printf("[%s] %s: %s, %s, %s, %s, %s, %s, %s\n", state, e.Entite, e.Date, e.Location, e.Type, e.Title, e.Barcode, e.RentType, e.Booked)
 			output += fmt.Sprintf("[%s]\t%s\t%s\n", state, e.Date.Format("02/01/2006"), e.Title)
