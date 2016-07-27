@@ -17,6 +17,8 @@ $ go get github.com/raphink/mediago
 
 ```toml
 # $HOME/.mediago.conf
+renew_before = "24h"
+
 [[account]]
 name = "Foo"
 login = "CHAM123456"

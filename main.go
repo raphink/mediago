@@ -33,7 +33,17 @@ type account struct {
 }
 
 type config struct {
-	Account []account
+	Account     []account
+	RenewBefore duration `toml:"renew_before"`
+}
+
+type duration struct {
+	time.Duration
+}
+
+func (d *duration) UnmarshalText(text []byte) (err error) {
+	d.Duration, err = time.ParseDuration(string(text))
+	return
 }
 
 var confFile = fmt.Sprintf("%s/.mediago.conf", os.Getenv("HOME"))
@@ -49,7 +59,7 @@ func main() {
 
 		fmt.Printf("# %s\n", a.Name)
 		now := time.Now()
-		tomorrow := now.Add(24 * time.Hour)
+		tomorrow := now.Add(cfg.RenewBefore.Duration)
 		var alert bool
 		var output string
 		for _, e := range i {
