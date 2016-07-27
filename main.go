@@ -7,6 +7,7 @@ import (
 	"net/http/cookiejar"
 	"net/url"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/BurntSushi/toml"
@@ -63,14 +64,18 @@ var confFile = fmt.Sprintf("%s/.mediago.conf", os.Getenv("HOME"))
 func main() {
 	cfg := loadConfig()
 
+	var alerts []string
+
 	for _, a := range cfg.Account {
 		items := getAccountItems(a.Name, a.Login, a.Password)
 		titleColor.Println(a.Name)
 		for _, i := range items {
 			i.processState(cfg.RenewBefore.Duration)
-			fmt.Printf("[%s]\t%s\t%s\n", i.State, i.Date.Format("02/01/2006"), i.Title)
+			alerts = append(alerts, fmt.Sprintf("[%s]\t%s\t%s\n", i.State, i.Date.Format("02/01/2006"), i.Title))
 		}
 	}
+
+	fmt.Printf(strings.Join(alerts, "\n"))
 }
 
 func loadConfig() (c *config) {
