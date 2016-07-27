@@ -43,6 +43,7 @@ type account struct {
 	Name     string
 	Login    string
 	Password string
+	Alerts   []string
 }
 
 type config struct {
@@ -64,14 +65,13 @@ var confFile = fmt.Sprintf("%s/.mediago.conf", os.Getenv("HOME"))
 func main() {
 	cfg := loadConfig()
 	for _, a := range cfg.Account {
-		var alerts []string
 		items := getAccountItems(a.Name, a.Login, a.Password)
 		titleColor.Println(a.Name)
 		for _, i := range items {
 			i.processState(cfg.RenewBefore.Duration)
-			alerts = append(alerts, fmt.Sprintf("[%s]\t%s\t%s\n", i.State, i.Date.Format("02/01/2006"), i.Title))
+			a.Alerts = append(a.Alerts, fmt.Sprintf("[%s]\t%s\t%s\n", i.State, i.Date.Format("02/01/2006"), i.Title))
 		}
-		fmt.Printf(strings.Join(alerts, ""))
+		fmt.Printf(strings.Join(a.Alerts, ""))
 		fmt.Println()
 	}
 }
