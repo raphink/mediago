@@ -14,41 +14,9 @@ import (
 	"net/smtp"
 
 	"github.com/BurntSushi/toml"
-	"github.com/fatih/color"
 	"golang.org/x/net/html"
 	"golang.org/x/net/publicsuffix"
 )
-
-// Colors
-var titleColor = color.New(color.FgBlue).Add(color.Bold).Add(color.Underline)
-var okColor = color.New(color.FgGreen).Add(color.Bold).SprintFunc()
-var warnColor = color.New(color.FgYellow).Add(color.Bold).SprintFunc()
-var errColor = color.New(color.FgRed).Add(color.Bold).SprintFunc()
-
-// Item states
-var OK = "OK"
-var NeedsRenewing = "NEEDS RENEWING"
-var Late = "!!LATE!!"
-
-type Item struct {
-	Entite   string
-	Date     time.Time
-	Location string
-	Type     string
-	Title    string
-	Barcode  string
-	RentType string
-	Booked   string
-	State    state
-}
-
-type state struct {
-	Message string
-}
-
-var stateOK = state{Message: OK}
-var stateNeedsRenewing = state{Message: NeedsRenewing}
-var stateLate = state{Message: Late}
 
 type account struct {
 	Name     string
@@ -99,22 +67,6 @@ func main() {
 		}
 		a.report(cfg)
 	}
-}
-
-func (s *state) String() string {
-	return s.Message
-}
-
-func (s *state) ColoredString() string {
-	switch s.Message {
-	case OK:
-		return okColor(s.Message)
-	case NeedsRenewing:
-		return warnColor(s.Message)
-	case Late:
-		return errColor(s.Message)
-	}
-	return ""
 }
 
 func (a *account) alerts(colored bool) (alerts string) {
@@ -199,107 +151,5 @@ func getAccountItems(name, account, password string) (items []*Item) {
 	z := html.NewTokenizer(data)
 
 	items = getItems(z)
-	return
-}
-
-func getItems(z *html.Tokenizer) (entries []*Item) {
-	for {
-		tt := z.Next()
-		switch tt {
-		case html.ErrorToken:
-			// end of document, done
-			return
-		case html.StartTagToken:
-			n, a := z.TagName()
-			if string(n) == "tr" && a {
-				for {
-					k, v, more := z.TagAttr()
-					if string(k) == "entite" {
-						entries = append(entries, getItem(z, string(v)))
-						break
-					}
-					if !more {
-						break
-					}
-				}
-			}
-		}
-	}
-}
-
-func getItem(z *html.Tokenizer, entite string) (item *Item) {
-	item = &Item{
-		Entite: entite,
-	}
-
-	z.Next() // text (newline)
-	z.Next() // td
-	z.Next() // input
-	z.Next() // /td
-
-	z.Next() // td
-	z.Next() // text
-	date, err := time.Parse("02/01/2006", z.Token().Data)
-	if err != nil {
-		log.Printf("Failed to parse date %s", z.Token().Data)
-		os.Exit(1)
-	}
-	item.Date = date
-	z.Next() // /td
-
-	z.Next() // td
-	z.Next() // text
-	item.Location = z.Token().Data
-	z.Next() // /td
-
-	z.Next() // td
-	z.Next() // text
-	item.Type = z.Token().Data
-	z.Next() // /td
-
-	z.Next() // td
-	z.Next() // text
-	item.Title = z.Token().Data
-	z.Next() // /td
-
-	z.Next() // td
-	z.Next() // text
-	item.Barcode = z.Token().Data
-	z.Next() // /td
-
-	z.Next() // td
-	z.Next() // text
-	item.RentType = z.Token().Data
-	z.Next() // /td
-
-	z.Next() // td
-	z.Next() // text
-	item.Booked = z.Token().Data
-	z.Next() // /td
-
-	z.Next() // text (newline)
-	z.Next() // /tr
-
-	return
-}
-
-func (i *Item) processState(renewBefore time.Duration) (alert bool) {
-	now := time.Now()
-	renewDate := now.Add(renewBefore)
-
-	if now.After(i.Date) {
-		i.State = stateLate
-		alert = true
-	} else if renewDate.After(i.Date) {
-		i.State = stateNeedsRenewing
-		alert = true
-	} else {
-		i.State = stateOK
-	}
-	return
-}
-
-func (i *Item) renew() (err error) {
-	fmt.Printf("Autorenewing is not implemented yet")
 	return
 }
