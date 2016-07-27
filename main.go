@@ -70,7 +70,7 @@ func main() {
 		i := getAccountItems(a.Name, a.Login, a.Password)
 		titleColor.Println(a.Name)
 		for _, e := range i {
-			setItemState(e, cfg.RenewBefore.Duration)
+			e.processState(cfg.RenewBefore.Duration)
 			fmt.Printf("[%s]\t%s\t%s\n", e.State, e.Date.Format("02/01/2006"), e.Title)
 		}
 	}
@@ -196,7 +196,7 @@ func getItem(z *html.Tokenizer, entite string) (item *Item) {
 	return
 }
 
-func setItemState(i *Item, renewBefore time.Duration) {
+func (i *Item) processState(renewBefore time.Duration) {
 	now := time.Now()
 	renewDate := now.Add(renewBefore)
 
