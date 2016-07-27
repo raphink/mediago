@@ -68,5 +68,11 @@ func (i *Item) renew(c *http.Client) (err error) {
 
 	err = z.checkError()
 
+	if err != nil {
+		i.State = stateFailedRenewing
+	} else {
+		i.State = stateRenewed
+	}
+
 	return
 }

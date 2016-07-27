@@ -9,11 +9,15 @@ type state struct {
 // Item states
 var OK = "OK"
 var NeedsRenewing = "NEEDS RENEWING"
-var Late = "!!LATE!!"
+var Late = "LATE!"
+var Renewed = "RENEWED"
+var FailedRenewing = "FAILED RENEWING!"
 
 var stateOK = state{Message: OK}
 var stateNeedsRenewing = state{Message: NeedsRenewing}
 var stateLate = state{Message: Late}
+var stateRenewed = state{Message: Renewed}
+var stateFailedRenewing = state{Message: FailedRenewing}
 
 // Colors
 var titleColor = color.New(color.FgBlue).Add(color.Bold).Add(color.Underline)
@@ -32,6 +36,10 @@ func (s *state) ColoredString() string {
 	case NeedsRenewing:
 		return warnColor(s.Message)
 	case Late:
+		return errColor(s.Message)
+	case Renewed:
+		return okColor(s.Message)
+	case FailedRenewing:
 		return errColor(s.Message)
 	}
 	return ""
