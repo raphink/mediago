@@ -37,12 +37,12 @@ func (a *account) report(cfg *config) {
 	titleColor.Println(a.Name)
 	fmt.Println(a.alerts(true))
 
-	if a.Alert {
-		if cfg.Report == "smtp" {
-			SMTPAlert(cfg, a)
-		} else if cfg.Report == "gist" {
-			gistAlert(cfg, a)
-		}
+	if a.Alert && cfg.Report == "smtp" {
+		SMTPAlert(cfg, a)
+	}
+
+	if cfg.Report == "gist" {
+		gistAlert(cfg, a)
 	}
 }
 

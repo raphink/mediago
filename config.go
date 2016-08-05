@@ -13,6 +13,7 @@ type config struct {
 	AutoRenew   bool     `toml:"auto_renew"`
 	Report      string
 	Smtp        smtpCfg
+	Gist        gistCfg
 }
 
 type duration struct {
@@ -25,6 +26,11 @@ type smtpCfg struct {
 	Hostname   string
 	Port       int
 	Recipients []string
+}
+
+type gistCfg struct {
+	Token  string
+	GistID string `toml:"gist_id"`
 }
 
 func (d *duration) UnmarshalText(text []byte) (err error) {
