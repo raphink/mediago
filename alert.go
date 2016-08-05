@@ -28,3 +28,7 @@ func SMTPAlert(cfg *config, a *account) {
 		log.Print("ERROR: attempting to send a mail ", err)
 	}
 }
+
+func gistAlert(cfg *config, a *account) {
+	log.Print("Alerting to Gist")
+}
