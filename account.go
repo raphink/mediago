@@ -46,7 +46,7 @@ func (a *account) report(cfg *config) {
 	}
 
 	if cfg.Report == "gist" {
-		gistAlert(cfg, a)
+		gistReport(cfg, a)
 	}
 }
 
