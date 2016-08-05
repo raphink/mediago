@@ -20,7 +20,8 @@ $ go get github.com/raphink/mediago
 ```toml
 # $HOME/.mediago.conf
 renew_before = "24h"
-report = "smtp"
+alert = "smtp"
+report = "gist"
 
 [[account]]
 name = "Foo"
@@ -31,6 +32,10 @@ password = "SUPERPASS"
 name = "Bar"
 login = "CHAM456789"
 password = "ANOTHERPASS"
+
+[gist]
+token = "dfjdsfjkls2334589"
+gist_id = "1dsfdsjk32"
 
 [smtp]
 username = "smtp_user"
