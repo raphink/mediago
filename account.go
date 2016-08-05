@@ -29,7 +29,7 @@ func (a *account) alerts(colored bool, markdown bool) (alerts string) {
 			state = i.State.String()
 		}
 		if markdown {
-			alerts += fmt.Sprintf("- [ ] %s (%s, %s)\n", i.Title, state, i.Date.Format("02/01/2006"))
+			alerts += fmt.Sprintf("- [ ] \t**%s**\t | \t%s\t | \t%s\n", state, i.Date.Format("02/01/2006"), i.Title)
 		} else {
 			alerts += fmt.Sprintf("[%s]\t%s\t%s\n", state, i.Date.Format("02/01/2006"), i.Title)
 		}
