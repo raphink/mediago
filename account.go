@@ -5,10 +5,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/cookiejar"
-	"net/smtp"
 	"net/url"
-	"strconv"
-	"strings"
 
 	"golang.org/x/net/html"
 	"golang.org/x/net/publicsuffix"
@@ -41,24 +38,7 @@ func (a *account) report(cfg *config) {
 	fmt.Println(a.alerts(true))
 
 	if a.Alert && cfg.Report == "smtp" {
-		fmt.Printf("Sending SMTP report using %s@%s\n", cfg.Smtp.Username, cfg.Smtp.Hostname)
-		auth := smtp.PlainAuth("",
-			cfg.Smtp.Username,
-			cfg.Smtp.Password,
-			cfg.Smtp.Hostname,
-		)
-		msg := fmt.Sprintf("To: %s\r\n", strings.Join(cfg.Smtp.Recipients, ","))
-		msg += fmt.Sprintf("Subject: Mediathèque books for %s\r\n\r\n", a.Name)
-		msg += a.alerts(false)
-		err := smtp.SendMail(cfg.Smtp.Hostname+":"+strconv.Itoa(cfg.Smtp.Port),
-			auth,
-			cfg.Smtp.Username,
-			cfg.Smtp.Recipients,
-			[]byte(msg),
-		)
-		if err != nil {
-			log.Print("ERROR: attempting to send a mail ", err)
-		}
+		SMTPAlert(cfg, a)
 	}
 }
 
