@@ -33,9 +33,12 @@ func gistReport(cfg *config, a *account) {
 		filename := fmt.Sprintf("%s.md", a.Name)
 		file.Filename = &filename
 	}
-	content := a.alerts(false, true)
-	if content == "" {
-		content = fmt.Sprintf("**No books for %s**", a.Name)
+	content := fmt.Sprintf("# %s\n\n", a.Name)
+	newContent := a.alerts(false, true)
+	if newContent == "" {
+		content += fmt.Sprintf("**No books for %s**", a.Name)
+	} else {
+		content += newContent
 	}
 	file.Content = &content
 	gist.Files[github.GistFilename(*file.Filename)] = *file
