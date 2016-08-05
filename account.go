@@ -87,6 +87,8 @@ func (a *account) getItems() (items []*Item) {
 		log.Fatal(err)
 	}
 
+	//TODO: check if authentication failed
+
 	resp, err = a.Client.Get("http://www.bm-chambery.fr/opacwebaloes/index.aspx?idPage=478")
 	if err != nil {
 		log.Fatal(err)
