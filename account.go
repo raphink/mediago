@@ -20,7 +20,7 @@ type account struct {
 	Client   *http.Client
 }
 
-func (a *account) alerts(colored bool) (alerts string) {
+func (a *account) alerts(colored bool, markdown bool) (alerts string) {
 	var state string
 	for _, i := range a.Items {
 		if colored {
@@ -28,14 +28,18 @@ func (a *account) alerts(colored bool) (alerts string) {
 		} else {
 			state = i.State.String()
 		}
-		alerts += fmt.Sprintf("[%s]\t%s\t%s\n", state, i.Date.Format("02/01/2006"), i.Title)
+		if markdown {
+			alerts += fmt.Sprintf("- [ ] %s (%s, %s)\n", i.Title, state, i.Date.Format("02/01/2006"))
+		} else {
+			alerts += fmt.Sprintf("[%s]\t%s\t%s\n", state, i.Date.Format("02/01/2006"), i.Title)
+		}
 	}
 	return
 }
 
 func (a *account) report(cfg *config) {
 	titleColor.Println(a.Name)
-	fmt.Println(a.alerts(true))
+	fmt.Println(a.alerts(true, false))
 
 	if a.Alert && cfg.Report == "smtp" {
 		SMTPAlert(cfg, a)

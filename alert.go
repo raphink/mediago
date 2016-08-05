@@ -20,7 +20,7 @@ func SMTPAlert(cfg *config, a *account) {
 	)
 	msg := fmt.Sprintf("To: %s\r\n", strings.Join(cfg.Smtp.Recipients, ","))
 	msg += fmt.Sprintf("Subject: Mediathèque books for %s\r\n\r\n", a.Name)
-	msg += a.alerts(false)
+	msg += a.alerts(false, false)
 	err := smtp.SendMail(cfg.Smtp.Hostname+":"+strconv.Itoa(cfg.Smtp.Port),
 		auth,
 		cfg.Smtp.Username,
@@ -57,7 +57,7 @@ func gistAlert(cfg *config, a *account) {
 		filename := fmt.Sprintf("%s.md", a.Name)
 		file.Filename = &filename
 	}
-	content := a.alerts(false)
+	content := a.alerts(false, true)
 	file.Content = &content
 	gist.Files[github.GistFilename(*file.Filename)] = *file
 
