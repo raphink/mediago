@@ -7,6 +7,7 @@ Supports checking multiple accounts.
 
 ![screenshot](./screenshot.png)
 
+![screenshot gist](./screenshot_gist.png)
 
 # Installing
 
