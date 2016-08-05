@@ -23,14 +23,15 @@ type account struct {
 func (a *account) alerts(colored bool, markdown bool) (alerts string) {
 	var state string
 	for _, i := range a.Items {
-		if colored {
-			state = i.State.ColoredString()
-		} else {
-			state = i.State.String()
-		}
 		if markdown {
-			alerts += fmt.Sprintf("- [ ] \t**%s**\t | \t%s\t | \t%s\n", state, i.Date.Format("02/01/2006"), i.Title)
+			state = i.State.MarkdownBadge(i.Date)
+			alerts += fmt.Sprintf("- [ ] %s %s\n", state, i.Title)
 		} else {
+			if colored {
+				state = i.State.ColoredString()
+			} else {
+				state = i.State.String()
+			}
 			alerts += fmt.Sprintf("[%s]\t%s\t%s\n", state, i.Date.Format("02/01/2006"), i.Title)
 		}
 	}
