@@ -104,6 +104,31 @@ func (z *htmlParser) getItem(entite string) (item *Item) {
 	return
 }
 
+func (z *htmlParser) isLogged() bool {
+	for {
+		tt := z.Next()
+		switch tt {
+		case html.ErrorToken:
+			// end of document, done
+			return false
+		case html.StartTagToken:
+			n, a := z.TagName()
+			if string(n) == "div" && a {
+				for {
+					k, v, more := z.TagAttr()
+					if string(k) == "id" && string(v) == "compte" {
+						return true
+					}
+					if !more {
+						break
+					}
+				}
+			}
+		}
+	}
+	return false
+}
+
 func (z *htmlParser) checkError() (err error) {
 	for {
 		tt := z.Next()

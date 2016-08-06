@@ -83,6 +83,18 @@ func (a *account) getItems() (items []*Item) {
 		return
 	}
 
+	loginData := resp.Body
+	defer loginData.Close()
+
+	z := &htmlParser{
+		Tokenizer: html.NewTokenizer(loginData),
+	}
+
+	if !z.isLogged() {
+		fmt.Printf("ERROR: not logged as %s\n", a.Name)
+		return
+	}
+
 	resp, err = a.Client.Get("http://www.bm-chambery.fr/opacwebaloes/index.aspx?idPage=478")
 	if err != nil {
 		log.Fatal(err)
@@ -91,7 +103,7 @@ func (a *account) getItems() (items []*Item) {
 	data := resp.Body
 	defer data.Close()
 
-	z := &htmlParser{
+	z = &htmlParser{
 		Tokenizer: html.NewTokenizer(data),
 	}
 
