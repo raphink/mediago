@@ -5,11 +5,9 @@ import (
 	"net/smtp"
 	"strconv"
 	"strings"
-
-	log "github.com/Sirupsen/logrus"
 )
 
-func SMTPAlert(cfg *config, a *account) {
+func SMTPAlert(cfg *config, a *account) (err error) {
 	fmt.Printf("Sending SMTP report using %s@%s\n", cfg.Smtp.Username, cfg.Smtp.Hostname)
 	auth := smtp.PlainAuth("",
 		cfg.Smtp.Username,
@@ -19,13 +17,11 @@ func SMTPAlert(cfg *config, a *account) {
 	msg := fmt.Sprintf("To: %s\r\n", strings.Join(cfg.Smtp.Recipients, ","))
 	msg += fmt.Sprintf("Subject: Mediathèque books for %s\r\n\r\n", a.Name)
 	msg += a.alerts(false, false)
-	err := smtp.SendMail(cfg.Smtp.Hostname+":"+strconv.Itoa(cfg.Smtp.Port),
+	err = smtp.SendMail(cfg.Smtp.Hostname+":"+strconv.Itoa(cfg.Smtp.Port),
 		auth,
 		cfg.Smtp.Username,
 		cfg.Smtp.Recipients,
 		[]byte(msg),
 	)
-	if err != nil {
-		log.Print("ERROR: attempting to send a mail ", err)
-	}
+	return
 }

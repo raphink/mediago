@@ -27,6 +27,9 @@ func main() {
 			a.Alert = alert || a.Alert
 			a.Items = append(a.Items, i)
 		}
-		a.report(cfg)
+		err = a.report(cfg)
+		if err != nil {
+			log.Error(err)
+		}
 	}
 }

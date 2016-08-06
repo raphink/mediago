@@ -37,17 +37,26 @@ func (a *account) alerts(colored bool, markdown bool) (alerts string) {
 	return
 }
 
-func (a *account) report(cfg *config) {
+func (a *account) report(cfg *config) (err error) {
 	titleColor.Println(a.Name)
 	fmt.Println(a.alerts(true, false))
 
 	if a.Alert && cfg.Alert == "smtp" {
-		SMTPAlert(cfg, a)
+		err = SMTPAlert(cfg, a)
+		if err != nil {
+			err = fmt.Errorf("failed to send mail: %v", err)
+			return
+		}
 	}
 
 	if cfg.Report == "gist" {
-		gistReport(cfg, a)
+		err = gistReport(cfg, a)
+		if err != nil {
+			err = fmt.Errorf("failed save report in gist: %v", err)
+			return
+		}
 	}
+	return
 }
 
 func (a *account) getItems() (items []*Item, err error) {

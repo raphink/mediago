@@ -9,8 +9,8 @@ import (
 	"golang.org/x/oauth2"
 )
 
-func gistReport(cfg *config, a *account) {
-	log.Println("Saving report to Gist")
+func gistReport(cfg *config, a *account) (err error) {
+	log.Debug("Saving report to Gist")
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: cfg.Gist.Token},
 	)
@@ -20,7 +20,8 @@ func gistReport(cfg *config, a *account) {
 
 	gist, _, err := client.Gists.Get(cfg.Gist.GistID)
 	if err != nil {
-		log.Printf("ERROR: could not retrieve Gist %s: %v\n", cfg.Gist.GistID, err)
+		err = fmt.Errorf("could not retrieve Gist %s: %v\n", cfg.Gist.GistID, err)
+		return
 	}
 	var file *github.GistFile
 	for _, f := range gist.Files {
@@ -46,6 +47,8 @@ func gistReport(cfg *config, a *account) {
 
 	_, _, err = client.Gists.Edit(cfg.Gist.GistID, gist)
 	if err != nil {
-		log.Printf("ERROR: failed to save Gist %s: %v\n", cfg.Gist.GistID, err)
+		err = fmt.Errorf("failed to save Gist %s: %v\n", cfg.Gist.GistID, err)
+		return
 	}
+	return
 }
