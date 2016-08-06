@@ -56,13 +56,13 @@ func (s *state) MarkdownBadge(date time.Time) string {
 	case OK:
 		return fmt.Sprintf("![%s](https://img.shields.io/badge/%s-ok-green.svg)", s.Message, fmtDate)
 	case NeedsRenewing:
-		return fmt.Sprintf("![%s](https://img.shields.io/badge/%s-needs%20renewing-orange.svg)", s.Message, fmtDate)
+		return fmt.Sprintf("![%s](https://img.shields.io/badge/%s-needs_renewing-orange.svg)", s.Message, fmtDate)
 	case Late:
 		return fmt.Sprintf("![%s](https://img.shields.io/badge/%s-late-red.svg)", s.Message, fmtDate)
 	case Renewed:
 		return fmt.Sprintf("![%s](https://img.shields.io/badge/%s-renewed-green.svg)", s.Message, fmtDate)
 	case FailedRenewing:
-		return fmt.Sprintf("![%s](https://img.shields.io/badge/%s-failed%20renewing-red.svg)", s.Message, fmtDate)
+		return fmt.Sprintf("![%s](https://img.shields.io/badge/%s-failed_renewing-red.svg)", s.Message, fmtDate)
 	}
 	return ""
 }
