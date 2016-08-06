@@ -17,10 +17,15 @@ type account struct {
 	Items    []*Item
 	Alert    bool
 	Client   *http.Client
+	Error    error
 }
 
 func (a *account) alerts(colored bool, markdown bool) (alerts string) {
 	var state string
+	if a.Error != nil {
+		alerts += fmt.Sprintf("**%s**", a.Error.Error())
+		return
+	}
 	for _, i := range a.Items {
 		if markdown {
 			state = i.State.MarkdownBadge(i.Date)

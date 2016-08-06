@@ -15,6 +15,7 @@ func main() {
 		items, err := a.getItems()
 		if err != nil {
 			log.Error(err)
+			a.Error = err
 		}
 		for _, i := range items {
 			alert := i.processState(cfg.RenewBefore.Duration)
