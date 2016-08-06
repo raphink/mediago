@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
@@ -51,13 +50,14 @@ func (a *account) report(cfg *config) {
 	}
 }
 
-func (a *account) getItems() (items []*Item) {
+func (a *account) getItems() (items []*Item, err error) {
 	options := cookiejar.Options{
 		PublicSuffixList: publicsuffix.List,
 	}
 	jar, err := cookiejar.New(&options)
 	if err != nil {
-		log.Fatal(err)
+		err = fmt.Errorf("Failed to initialize cookie jar for %s", a.Name)
+		return
 	}
 	a.Client = &http.Client{Jar: jar}
 	resp, err := a.Client.PostForm("http://www.bm-chambery.fr/opacwebaloes/index.aspx?idPage=33", url.Values{
@@ -73,13 +73,13 @@ func (a *account) getItems() (items []*Item) {
 		"__EVENTVALIDATION":    {"/wEWBgLAucfHCALo+JuXDgLn/5usBALDgOm0AwKzr8rjCgKvhOvWBzYYzUEJnaxbNve47aiHYXI9Ma41"},
 	})
 	if err != nil {
-		log.Fatal(err)
+		err = fmt.Errorf("failed to log in for %s: %v", a.Name, err)
+		return
 	}
 
-	//TODO: check if authentication failed
 	domain, _ := url.Parse("http://www.bm-chambery.fr")
 	if len(a.Client.Jar.Cookies(domain)) == 0 {
-		fmt.Printf("ERROR: authentication failed for account %s", a.Name)
+		err = fmt.Errorf("authentication failed for account %s", a.Name)
 		return
 	}
 
@@ -91,13 +91,14 @@ func (a *account) getItems() (items []*Item) {
 	}
 
 	if !z.isLogged() {
-		fmt.Printf("ERROR: not logged as %s\n", a.Name)
+		err = fmt.Errorf("not logged as %s\n", a.Name)
 		return
 	}
 
 	resp, err = a.Client.Get("http://www.bm-chambery.fr/opacwebaloes/index.aspx?idPage=478")
 	if err != nil {
-		log.Fatal(err)
+		err = fmt.Errorf("failed to retrieve books page: %v", err)
+		return
 	}
 
 	data := resp.Body

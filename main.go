@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
+
+	log "github.com/Sirupsen/logrus"
 )
 
 var confFile = fmt.Sprintf("%s/.mediago.conf", os.Getenv("HOME"))
@@ -10,7 +12,10 @@ var confFile = fmt.Sprintf("%s/.mediago.conf", os.Getenv("HOME"))
 func main() {
 	cfg := loadConfig()
 	for _, a := range cfg.Account {
-		items := a.getItems()
+		items, err := a.getItems()
+		if err != nil {
+			log.Error(err)
+		}
 		for _, i := range items {
 			alert := i.processState(cfg.RenewBefore.Duration)
 			if i.State == stateNeedsRenewing && cfg.AutoRenew {
