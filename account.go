@@ -77,6 +77,11 @@ func (a *account) getItems() (items []*Item) {
 	}
 
 	//TODO: check if authentication failed
+	domain, _ := url.Parse("http://www.bm-chambery.fr")
+	if len(a.Client.Jar.Cookies(domain)) == 0 {
+		fmt.Printf("ERROR: authentication failed for account %s", a.Name)
+		return
+	}
 
 	resp, err = a.Client.Get("http://www.bm-chambery.fr/opacwebaloes/index.aspx?idPage=478")
 	if err != nil {
