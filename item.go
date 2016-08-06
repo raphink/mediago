@@ -41,6 +41,7 @@ func (i *Item) processState(renewBefore time.Duration) (alert bool) {
 
 func (i *Item) renew(c *http.Client) (err error) {
 	fmt.Println("Autorenewing is not implemented yet")
+	return
 
 	resp, err := c.PostForm("http://www.bm-chambery.fr/opacwebaloes/index.aspx?idPage=478", url.Values{
 		"ctl00$ScriptManager1":     {"ctl00$ContentPlaceHolder1$ctl00$ctl00$ContentPlaceHolder1$ctl00$RadAjaxPanelPODPanel|ctl00$ContentPlaceHolder1$ctl00$ctl08$COMPTE_PRET_1_1$GrillePrets$ctl00$ctl02$ctl00$btnProlonger"},
