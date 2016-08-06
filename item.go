@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 	"time"
@@ -57,7 +56,8 @@ func (i *Item) renew(c *http.Client) (err error) {
 		"RadAJAXControlID": {"ctl00_ContentPlaceHolder1_ctl00_RadAjaxPanelPOD"},
 	})
 	if err != nil {
-		log.Fatal(err)
+		err = fmt.Errorf("failed to commit renewal request: %v", err)
+		return
 	}
 
 	data := resp.Body
