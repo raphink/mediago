@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
+	"strings"
 
 	"golang.org/x/net/html"
 	"golang.org/x/net/publicsuffix"
@@ -23,7 +24,7 @@ type account struct {
 func (a *account) alerts(colored bool, markdown bool) (alerts string) {
 	var state string
 	if a.Error != nil {
-		alerts += fmt.Sprintf("**%s**", a.Error.Error())
+		alerts += fmt.Sprintf("**%s**", strings.TrimSpace(a.Error.Error()))
 		return
 	}
 	for _, i := range a.Items {
