@@ -1,8 +1,9 @@
 package main
 
 import (
-	"log"
 	"time"
+
+	log "github.com/Sirupsen/logrus"
 
 	"github.com/BurntSushi/toml"
 )
