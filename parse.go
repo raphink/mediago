@@ -2,9 +2,10 @@ package main
 
 import (
 	"errors"
-	"log"
 	"os"
 	"time"
+
+	log "github.com/Sirupsen/logrus"
 
 	"golang.org/x/net/html"
 )

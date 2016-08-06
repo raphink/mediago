@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"log"
+
+	log "github.com/Sirupsen/logrus"
 
 	"github.com/google/go-github/github"
 	"golang.org/x/oauth2"

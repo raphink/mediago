@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/smtp"
 	"strconv"
 	"strings"
+
+	log "github.com/Sirupsen/logrus"
 )
 
 func SMTPAlert(cfg *config, a *account) {
