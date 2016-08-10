@@ -39,8 +39,8 @@ func (i *Item) processState(renewBefore time.Duration) (alert bool) {
 }
 
 func (i *Item) renew(c *http.Client) (err error) {
-	if i.RentType == "R1" {
-		// Already renewed once
+	if i.RentType == "R1" || i.Booked != "0" {
+		// Already renewed once or booked by someone else
 		i.State = stateCannotRenew
 		return
 	}
