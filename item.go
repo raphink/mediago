@@ -39,6 +39,12 @@ func (i *Item) processState(renewBefore time.Duration) (alert bool) {
 }
 
 func (i *Item) renew(c *http.Client) (err error) {
+	if i.RentType == "R1" {
+		// Already renewed once
+		i.State = stateCannotRenew
+		return
+	}
+
 	fmt.Println("Autorenewing is not implemented yet")
 	return
 

@@ -16,12 +16,14 @@ var OK = "OK"
 var NeedsRenewing = "NEEDS RENEWING"
 var Late = "LATE!"
 var Renewed = "RENEWED"
+var CannotRenew = "CANNOT RENEW!"
 var FailedRenewing = "FAILED RENEWING!"
 
 var stateOK = state{Message: OK}
 var stateNeedsRenewing = state{Message: NeedsRenewing}
 var stateLate = state{Message: Late}
 var stateRenewed = state{Message: Renewed}
+var stateCannotRenew = state{Message: CannotRenew}
 var stateFailedRenewing = state{Message: FailedRenewing}
 
 // Colors
@@ -44,6 +46,8 @@ func (s *state) ColoredString() string {
 		return errColor(s.Message)
 	case Renewed:
 		return okColor(s.Message)
+	case CannotRenew:
+		return errColor(s.Message)
 	case FailedRenewing:
 		return errColor(s.Message)
 	}
@@ -61,6 +65,8 @@ func (s *state) MarkdownBadge(date time.Time) string {
 		return fmt.Sprintf("![%s](https://img.shields.io/badge/%s-late-red.svg)", s.Message, fmtDate)
 	case Renewed:
 		return fmt.Sprintf("![%s](https://img.shields.io/badge/%s-renewed-green.svg)", s.Message, fmtDate)
+	case CannotRenew:
+		return fmt.Sprintf("![%s](https://img.shields.io/badge/%s-cannot_renew-red.svg)", s.Message, fmtDate)
 	case FailedRenewing:
 		return fmt.Sprintf("![%s](https://img.shields.io/badge/%s-failed_renewing-red.svg)", s.Message, fmtDate)
 	}
