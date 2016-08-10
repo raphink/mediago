@@ -5,10 +5,12 @@ import (
 	"net/smtp"
 	"strconv"
 	"strings"
+
+	log "github.com/Sirupsen/logrus"
 )
 
 func SMTPAlert(cfg *config, a *account) (err error) {
-	fmt.Debugf("Sending SMTP report using %s\n", cfg.Smtp.Username)
+	log.Debugf("Sending SMTP report using %s\n", cfg.Smtp.Username)
 	auth := smtp.PlainAuth("",
 		cfg.Smtp.Username,
 		cfg.Smtp.Password,
