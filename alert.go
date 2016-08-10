@@ -8,7 +8,7 @@ import (
 )
 
 func SMTPAlert(cfg *config, a *account) (err error) {
-	fmt.Printf("Sending SMTP report using %s@%s\n", cfg.Smtp.Username, cfg.Smtp.Hostname)
+	fmt.Debugf("Sending SMTP report using %s\n", cfg.Smtp.Username)
 	auth := smtp.PlainAuth("",
 		cfg.Smtp.Username,
 		cfg.Smtp.Password,
