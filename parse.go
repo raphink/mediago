@@ -27,7 +27,9 @@ func (z *htmlParser) getItems() (entries []*Item) {
 				for {
 					k, v, more := z.TagAttr()
 					if string(k) == "entite" {
-						entries = append(entries, z.getItem(string(v)))
+						if i := z.getItem(string(v)); i.Name != "" {
+							entries = append(entries, i)
+						}
 						break
 					}
 					if !more {
@@ -47,6 +49,9 @@ func (z *htmlParser) getItem(entite string) (item *Item) {
 	z.Next() // text (newline)
 	z.Next() // td
 	z.Next() // input
+	if n, _ := z.TagName(); string(n) != "input" {
+		return
+	}
 	for {
 		k, v, more := z.TagAttr()
 		if string(k) == "name" {
@@ -63,7 +68,7 @@ func (z *htmlParser) getItem(entite string) (item *Item) {
 	z.Next() // text
 	date, err := time.Parse("02/01/2006", z.Token().Data)
 	if err != nil {
-		log.Printf("Failed to parse date %s", z.Token().Data)
+		log.Printf("Failed to parse date %s: %v", z.Token().Data, err)
 		os.Exit(1)
 	}
 	item.Date = date
